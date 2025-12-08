@@ -1165,8 +1165,14 @@ export class UI {
         // Initial Scroll to Middle (C4)
         // Simple timeout to wait for render
         setTimeout(() => {
-            const c4 = document.querySelector('div[data-note="c/4"]');
-            if(c4) c4.scrollIntoView({ inline: "center", behavior: "smooth" });
+            const c4 = this.pianoContainer.querySelector('div[data-note="c/4"]');
+            if(c4) {
+                const scrollContainer = this.pianoContainer.parentElement;
+                if (scrollContainer) {
+                    const scrollX = c4.offsetLeft - (scrollContainer.clientWidth / 2) + (c4.offsetWidth / 2);
+                    scrollContainer.scrollTo({ left: scrollX, behavior: "smooth" });
+                }
+            }
         }, 100);
     }
 
@@ -1474,8 +1480,10 @@ export class UI {
             setTimeout(() => keyEl.classList.remove('playing'), 150);
             
             // Auto-scroll piano if needed
-            if (!this._isElementInViewport(keyEl, this.pianoContainer)) {
-                keyEl.scrollIntoView({ inline: "center", behavior: "smooth" });
+            const scrollContainer = this.pianoContainer.parentElement;
+            if (scrollContainer && !this._isElementInViewport(keyEl, scrollContainer)) {
+                 const scrollX = keyEl.offsetLeft - (scrollContainer.clientWidth / 2) + (keyEl.offsetWidth / 2);
+                 scrollContainer.scrollTo({ left: scrollX, behavior: "smooth" });
             }
         }
     }
